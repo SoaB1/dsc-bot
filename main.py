@@ -20,7 +20,7 @@ class MyBot(commands.Bot):
         print(f'Logged in as {self.user}#{self.user.id}')
 
 async def main():
-    bot = MyBot(intents=discord.Intents.all(), prefix='!')
+    bot = MyBot(intents=discord.Intents.all(), prefix='/')
     for cog in COGS:
         await bot.load_extension(cog)
         
