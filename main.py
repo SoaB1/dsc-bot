@@ -1,41 +1,30 @@
 # Load a Library for the bot
-from typing import Literal, Union, NamedTuple
-from enum import Enum
-
+import asyncio
 import discord
-from discord import app_commands
+from discord.ext import commands
+import asyncio
 import os
 import dotenv
 from dotenv import load_dotenv
-
-# Load a Library for local files
-from src import spreadsheet
-
 load_dotenv()
-MY_GUILD = discord.Object(id=983017319766827038)
 
-class MyClient(discord.Client):
-    def __init__(self):
-        super().__init__(intents=discord.Intents.default())
-        self.tree = app_commands.CommandTree(self)
+COGS = [
+    'cog.commands'
+]
 
-    async def setup_hook(self):
-        self.tree.copy_global_to(guild=MY_GUILD)
-        await self.tree.sync(guild=MY_GUILD)
+class MyBot(commands.Bot):
+    def __init__(self, prefix: str, intents: discord.Intents):
+        super().__init__(command_prefix=prefix, intents=intents)
+    
+    async def on_ready(self):
+        print(f'Logged in as {self.user}#{self.user.id}')
 
-client = MyClient()
+async def main():
+    bot = MyBot(intents=discord.Intents.all(), prefix='!')
+    for cog in COGS:
+        await bot.load_extension(cog)
+        
+    await bot.start(os.environ['TOKEN'])
 
-@client.event
-async def on_ready():
-    print(f'Logged in as {client.user} (ID: {client.user.id})')
-    print('------')
-
-@client.tree.command()
-async def ticket(interaction: discord.Interaction):
-    ticketNum = await spreadsheet.getTicketNumber()
-    embed = discord.Embed(title='New Ticket', description='Please fill out the following form, information to create a new ticket.', color=0x00ff00)
-    embed.add_field(name='Ticket Number', value=ticketNum, inline=False)
-    embed.add_field(name='URL', value=os.environ['FORM_URL'])
-    await interaction.response.send_message(embed=embed)
-
-client.run(os.environ['TOKEN'])
+if __name__ == '__main__':
+    asyncio.run(main())
