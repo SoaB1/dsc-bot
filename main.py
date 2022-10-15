@@ -1,16 +1,15 @@
 # Load a Library for the bot
-import asyncio
-import discord
+from cmath import log
+import os, dotenv, discord, asyncio, logging
 from discord.ext import commands
-import asyncio
-import os
-import dotenv
 from dotenv import load_dotenv
 load_dotenv()
 
 COGS = [
     'cog.commands'
 ]
+
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 
 class MyBot(commands.Bot):
     def __init__(self, prefix: str, intents: discord.Intents):
@@ -24,7 +23,8 @@ async def main():
     for cog in COGS:
         await bot.load_extension(cog)
         
-    await bot.start(os.environ['TOKEN'])
+    # await bot.start(os.environ['TOKEN'])
+    await bot.start(os.environ['TOKEN'], log_handler=handler)
 
 if __name__ == '__main__':
     asyncio.run(main())

@@ -17,7 +17,7 @@ scopes = [
 async def getTicketNumber():
     # Load the credentials from the JSON file
     credentials = Credentials.from_service_account_file(
-        "ticket-cord.json",
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'],
         scopes=scopes
     )
 
