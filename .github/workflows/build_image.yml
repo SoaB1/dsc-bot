@@ -2,7 +2,7 @@ name: Build a ghcr.io Image
 on:
   push:
     branches:
-      - "main"
+      - "master"
     tags:
       - "*"
     paths:
